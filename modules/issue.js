@@ -63,12 +63,14 @@ exports.create = (message, title) => new Promise(resolve => {
 
   message.guild.createChannel(`issue-${issueID}`).then(ch => {
 
+    const name = message.member.nickname !== null ? message.member.nickname : message.author.username
+
     ch.setParent(jsonData.category.open)
     ch.setTopic(title)
     ch.send({
       embed: {
         title: `#${issueID} ${title}`,
-        description: `${message.member.nickname}さんは、問題の詳細を報告してください。\n問題が解決したら、\`/issue close\` を送信してください。`
+        description: `${name}さんは、問題の詳細を報告してください。\n問題が解決したら、\`/issue close\` を送信してください。`
       }
     }).then(msg => msg.pin())
 
