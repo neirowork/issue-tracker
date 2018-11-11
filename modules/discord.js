@@ -4,7 +4,6 @@ const discordConfig = require('../.config/discord')
 const client = new discord.Client()
 
 let DEBUG_OPENISSUE = {}, DEBUG_CLOSEDISSUE = {}
-
 let DEBUG_ISSUEID = 0
 
 module.exports = () => {
