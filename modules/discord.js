@@ -1,6 +1,8 @@
 const discord = require('discord.js')
 const discordConfig = require('../.config/discord')
 
+const issueModule = require('./issue')
+
 const client = new discord.Client()
 
 let DEBUG_OPENISSUE = {}, DEBUG_CLOSEDISSUE = {}
@@ -36,28 +38,24 @@ module.exports = () => {
     }
 
     const rcvMessage = message.content
-
-    if(/^\/issue create (.*)$/.test(rcvMessage)) {
+    if(/^\/issue test$/.test(rcvMessage)) {
+    }
+    else if(/^\/issue init$/.test(rcvMessage)) {
+      console.log('[modules.discord]<message> initialzation')
+      issueModule.init(message.guild).then(status => {
+        if(status) {
+          message.channel.send('初期化に成功しました。')
+        }
+      })
+    }
+    else if(/^\/issue create (.*)$/.test(rcvMessage)) {
       console.log('[modules.discord]<message> create issue')
 
-      const issue = rcvMessage.match(/^\/issue create (.*)$/)[1]
-
-      DEBUG_ISSUEID++
+      const issueTitle = rcvMessage.match(/^\/issue create (.*)$/)[1]
 
       message.channel.startTyping()
-      message.guild.createChannel(`issue-${DEBUG_ISSUEID}`).then(channel => {
-
-        channel.setParent(DEBUG_OPENISSUE[message.guild.id])
-        channel.setTopic(issue)
-        channel.send({
-          embed: {
-            title: `#${DEBUG_ISSUEID} ${issue}`,
-            description: `${message.member.nickname}さんは、問題の詳細を報告してください。\n問題が解決したら、\`/issue close\` を送信してください。`
-          }
-        }).then(msg => msg.pin())
-
-        message.channel.send(`<@!${message.author.id}> Issue #${DEBUG_ISSUEID} を作成しました。\n<#${channel.id}> で問題の詳細を報告してください。`).then(() => message.channel.stopTyping())
-
+      issueModule.create(message, issueTitle).then(() => {
+        message.channel.stopTyping()
       })
 
     }
