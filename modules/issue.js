@@ -49,9 +49,7 @@ exports.init = guild => new Promise(resolve => {
 exports.initIssue = guild => new Promise(resolve => {
 
   let jsonData = require(`${tempDir}/${guild.id}.json`)
-  jsonData = {
-    issues: {}
-  }
+  jsonData.issues = {}
   
   commitJSON(guild, jsonData).then(status => resolve(status))
 
@@ -89,29 +87,32 @@ exports.create = (message, title) => new Promise(resolve => {
   
 })
 
-/* Issue クローズ処理 */
-exports.close = message => new Promise(resolve => {
+/* Issueチャンネル管理 */
+exports.controlChannel = (op, message) => new Promise(resolve => {
   
   const jsonData = require(`${tempDir}/${message.guild.id}.json`)
+  let category = ''
+  
+  switch(op) {
+    case 'close':
+      category = jsonData.category.closed
+      break
+    
+    case 'reopen':
+      category = jsonData.category.open
+      break
+    
+    default:
+      resolve(false)
+      return
+  }
+
   if(!(message.channel.id in jsonData.issues)) {
     resolve(false)
     return
   }
 
-  message.channel.setParent(jsonData.category.closed).then(() => resolve(true))
-
-})
-
-/* Issue 再オープン処理 */
-exports.reOpen = message => new Promise(resolve => {
-  
-  const jsonData = require(`${tempDir}/${message.guild.id}.json`)
-  if(!(message.channel.id in jsonData.issues)) {
-    resolve(false)
-    return
-  }
-
-  message.channel.setParent(jsonData.category.open).then(() => resolve(true))
+  message.channel.setParent(category).then(() => resolve(true))
 
 })
 

@@ -67,10 +67,10 @@ module.exports = () => {
       })
 
     }
-    else if(/^\/issue close$/.test(rcvMessage)) {
+    else if(/^\/issue (?:close)$/.test(rcvMessage)) {
       console.log('[modules.discord]<message> close issue')
 
-      issueModule.close(message).then(status => {
+      issueModule.controlChannel('close', message).then(status => {
         if(status) {
           message.channel.send('クローズしました。')
         } else {
@@ -82,7 +82,7 @@ module.exports = () => {
     else if(/^\/issue reopen$/.test(rcvMessage)) {
       console.log('[modules.discord]<message> re-open issue')
 
-      issueModule.reOpen(message).then(status => {
+      issueModule.controlChannel('reopen', message).then(status => {
         if(status) {
           message.channel.send('再オープンしました。')
         } else {
