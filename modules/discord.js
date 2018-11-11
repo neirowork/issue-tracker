@@ -40,11 +40,19 @@ module.exports = () => {
     const rcvMessage = message.content
     if(/^\/issue test$/.test(rcvMessage)) {
     }
-    else if(/^\/issue init$/.test(rcvMessage)) {
+    else if(/^\/issue init all$/.test(rcvMessage)) {
       console.log('[modules.discord]<message> initialzation')
       issueModule.init(message.guild).then(status => {
         if(status) {
-          message.channel.send('初期化に成功しました。')
+          message.channel.send('設定ファイルの初期化に成功しました。')
+        }
+      })
+    }
+    else if(/^\/issue init issues$/.test(rcvMessage)) {
+      console.log('[modules.discord]<message> initialzation')
+      issueModule.initIssue(message.guild).then(status => {
+        if(status) {
+          message.channel.send('Issueの初期化に成功しました。')
         }
       })
     }
@@ -59,22 +67,38 @@ module.exports = () => {
       })
 
     }
-    else if(/^issue-[0-9]+$/.test(message.channel.name)) {
+    else if(/^\/issue close$/.test(rcvMessage)) {
+      console.log('[modules.discord]<message> close issue')
 
-      if(/^\/issue close$/.test(rcvMessage)) {
-        console.log('[modules.discord]<message> close issue')
+      issueModule.close(message).then(status => {
+        if(status) {
+          message.channel.send('クローズしました。')
+        } else {
+          message.channel.send('このチャンネルではクローズできません。')
+        }
+      })
 
-        message.channel.setParent(DEBUG_CLOSEDISSUE[message.guild.id])
-        message.channel.send('Issueをクローズしました。')
+    }
+    else if(/^\/issue reopen$/.test(rcvMessage)) {
+      console.log('[modules.discord]<message> re-open issue')
 
-      }
-      else if(/^\/issue reopen$/.test(rcvMessage)) {
-        console.log('[modules.discord]<message> re-open issue')
+      issueModule.reOpen(message).then(status => {
+        if(status) {
+          message.channel.send('再オープンしました。')
+        } else {
+          message.channel.send('このチャンネルでは再オープンできません。')
+        }
+      })
 
-        message.channel.setParent(DEBUG_OPENISSUE[message.guild.id])
-        message.channel.send('Issueを再オープンしました。')
+    }
+    else if(/^\/issue delete$/.test(rcvMessage)) {
+      console.log('[modules.discord]<message> delete channel')
 
-      }
+      issueModule.delete(message).then(status => {
+        if(!status) {
+          message.channel.send('このチャンネルは削除できません。')
+        }
+      })
 
     }
 
