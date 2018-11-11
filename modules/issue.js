@@ -48,7 +48,7 @@ exports.init = guild => new Promise(resolve => {
 /* Issue 初期化処理 */
 exports.initIssue = guild => new Promise(resolve => {
 
-  const jsonData = require(`${tempDir}/${guild.id}.json`)
+  let jsonData = require(`${tempDir}/${guild.id}.json`)
   jsonData = {
     issues: {}
   }
