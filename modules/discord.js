@@ -32,6 +32,9 @@ module.exports = () => {
     if(message.author.id === client.user.id) return
 
     if(message.channel.type !== 'text') {
+
+      console.log('[modules.discord]<message> message.channel.type !== \'text\'')
+
       message.channel.send('Issue Trackerが導入されているサーバでのみ利用できます。')
       return
     }
@@ -39,6 +42,8 @@ module.exports = () => {
     const rcvMessage = message.content
 
     if(/^\/issue create (.*)$/.test(rcvMessage)) {
+
+      console.log('[modules.discord]<message> create issue')
 
       const issue = rcvMessage.match(/^\/issue create (.*)$/)[1]
 
@@ -50,12 +55,13 @@ module.exports = () => {
 
         channel.setParent(DEBUG_OPENISSUE[message.guild.id])
         channel.setTopic(issue)
+
         channel.send({
           embed: {
             title: `#${DEBUG_ISSUEID} ${issue}`,
             description: `${message.member.nickname}さんは、問題の詳細を報告してください。\n問題が解決したら、\`/issue close\` を送信してください。`
           }
-        })
+        }).then(msg => msg.pin())
 
         message.channel.send(`<@!${message.author.id}> Issue #${DEBUG_ISSUEID} を作成しました。\n<#${channel.id}> で問題の詳細を報告してください。`)
         message.channel.stopTyping()
@@ -66,10 +72,16 @@ module.exports = () => {
     else if(/^issue-[0-9]+$/.test(message.channel.name)) {
 
       if(/^\/issue close$/.test(rcvMessage)) {
+
+        console.log('[modules.discord]<message> close issue')
+
         message.channel.setParent(DEBUG_CLOSEDISSUE[message.guild.id])
         message.channel.send('Issueをクローズしました。')
       }
       else if(/^\/issue reopen$/.test(rcvMessage)) {
+
+        console.log('[modules.discord]<message> re-open issue')
+
         message.channel.setParent(DEBUG_OPENISSUE[message.guild.id])
         message.channel.send('Issueを再オープンしました。')
       }
