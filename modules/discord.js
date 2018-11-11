@@ -38,25 +38,44 @@ module.exports = () => {
     }
 
     const rcvMessage = message.content
-    if(/^\/issue test$/.test(rcvMessage)) {
+
+    if(message.channel.id === '511206923614421002') {
+
+      if(/^\/issue test$/.test(rcvMessage)) {
+        console.log('[modules.discord]<message> test')
+      }
+      else if(/^\/issue init all$/.test(rcvMessage)) {
+        console.log('[modules.discord]<message> all initialzation')
+
+        issueModule.init(message.guild).then(status => {
+          if(status) {
+            message.channel.send('設定ファイルの初期化に成功しました。')
+          }
+        })
+      }
+      else if(/^\/issue init issues$/.test(rcvMessage)) {
+        console.log('[modules.discord]<message> issues initialzation')
+
+        issueModule.initIssue(message.guild).then(status => {
+          if(status) {
+            message.channel.send('Issueの初期化に成功しました。')
+          }
+        })
+      }
+      // else if(/^\/issue delete$/.test(rcvMessage)) {
+      //   console.log('[modules.discord]<message> delete channel')
+  
+      //   issueModule.delete(message).then(status => {
+      //     if(!status) {
+      //       message.channel.send('このチャンネルは削除できません。')
+      //     }
+      //   })
+  
+      // }
+
     }
-    else if(/^\/issue init all$/.test(rcvMessage)) {
-      console.log('[modules.discord]<message> initialzation')
-      issueModule.init(message.guild).then(status => {
-        if(status) {
-          message.channel.send('設定ファイルの初期化に成功しました。')
-        }
-      })
-    }
-    else if(/^\/issue init issues$/.test(rcvMessage)) {
-      console.log('[modules.discord]<message> initialzation')
-      issueModule.initIssue(message.guild).then(status => {
-        if(status) {
-          message.channel.send('Issueの初期化に成功しました。')
-        }
-      })
-    }
-    else if(/^\/issue create (.*)$/.test(rcvMessage)) {
+    
+    if(/^\/issue create (.*)$/.test(rcvMessage)) {
       console.log('[modules.discord]<message> create issue')
 
       const issueTitle = rcvMessage.match(/^\/issue create (.*)$/)[1]
@@ -87,16 +106,6 @@ module.exports = () => {
           message.channel.send('再オープンしました。')
         } else {
           message.channel.send('このチャンネルでは再オープンできません。')
-        }
-      })
-
-    }
-    else if(/^\/issue delete$/.test(rcvMessage)) {
-      console.log('[modules.discord]<message> delete channel')
-
-      issueModule.delete(message).then(status => {
-        if(!status) {
-          message.channel.send('このチャンネルは削除できません。')
         }
       })
 
