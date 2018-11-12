@@ -2,6 +2,7 @@ const discord = require('discord.js')
 const discordConfig = require('../.config/discord')
 
 const issueModule = require('./issue')
+const controlModule = require('./control')
 
 const client = new discord.Client()
 
@@ -27,7 +28,7 @@ module.exports = () => {
 
     const rcvMessage = message.content
 
-    if(message.channel.id === '511206923614421002') {
+    if(controlModule.isControlChannel(message.guild, message.channel)) {
 
       if(/^\/issue test$/.test(rcvMessage)) {
         console.log('[modules.discord]<message> test')

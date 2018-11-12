@@ -35,6 +35,7 @@ exports.init = guild => new Promise( (resolve, reject) => {
     }
 
     const jsonData = {
+      channel: {},
       category: {},
       issues: {}
     }
