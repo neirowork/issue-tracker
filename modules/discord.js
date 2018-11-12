@@ -53,8 +53,8 @@ module.exports = () => {
         })
 
       }
-      else if(/^\/issue category list$/.test(rcvMessage)) {
-        console.log('[modules.discord]<message> sent categories list')
+      else if(/^\/issue category$/.test(rcvMessage)) {
+        console.log('[modules.discord]<message> category list')
         
         controlModule.sendCategory(message)
 
