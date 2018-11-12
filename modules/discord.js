@@ -36,10 +36,13 @@ module.exports = () => {
         console.log('[modules.discord]<message> all initialzation')
 
         issueModule.init(message.guild).then(status => {
-          if(status) {
+          if(status === null) {
             message.channel.send('設定ファイルの初期化に成功しました。')
           }
+        }).catch(err => {
+          message.channel.send('エラーが発生しました。')
         })
+        
       }
       else if(/^\/issue init issues$/.test(rcvMessage)) {
         console.log('[modules.discord]<message> issues initialzation')
