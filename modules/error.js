@@ -18,7 +18,7 @@ module.exports = (error = null) => {
     },
     ENOT_ISSUE_CHANNEL: {
       code: 'ENOT_ISSUE_CHANNEL',
-      readable: 'Issueのチャンネルはありません'
+      readable: 'Issueのチャンネルではありません'
     }
 
   }
