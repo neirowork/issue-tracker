@@ -1,26 +1,28 @@
 const fs = require('fs')
 
+const errorModule = require('./error')
+
 const tempDir = `${__dirname}/../temp`
 
 /* データストアへコミット */
-const commitJSON = (guild, data) => new Promise( resolve => {
+const commitJSON = (guild, data) => new Promise( (resolve, reject) => {
 
   fs.writeFile(`${tempDir}/${guild.id}.json`, JSON.stringify(data, null, 2), error => {
     if(error !== null) {
       console.log(error)
 
-      resolve(false)
+      reject(error)
       return
     }
     
     console.log('[modules.issue]<commitJSON> commit successful')
-    resolve(true)
+    resolve(null)
   })
 
 })
 
 /* 初期化処理 */
-exports.init = guild => new Promise(resolve => {
+exports.init = guild => new Promise( (resolve, reject) => {
 
   fs.mkdir(`${tempDir}`, error => {
 
@@ -28,35 +30,44 @@ exports.init = guild => new Promise(resolve => {
     if(error !== null && error.code !== 'EEXIST') {
       console.log(error)
 
-      resolve(false)
+      reject(errorModule().EOTHER)
       return
     }
-    else {
 
-      const jsonData = {
-        category: {},
-        issues: {}
-      }
-      /* データをコミット */
-      commitJSON(guild, jsonData).then(status => resolve(status))
-
+    const jsonData = {
+      category: {},
+      issues: {}
     }
+
+    /* データをコミット */
+    commitJSON(guild, jsonData).then(() => resolve(null)).catch(err => {
+      console.log('[modules.issue] error', err)
+
+      reject(errorModule(err).ECOMMIT_JSON)
+      return
+    })
+
   })
 
 })
 
 /* Issue 初期化処理 */
-exports.initIssue = guild => new Promise(resolve => {
+exports.initIssue = guild => new Promise( (resolve, reject) => {
 
   let jsonData = require(`${tempDir}/${guild.id}.json`)
   jsonData.issues = {}
   
-  commitJSON(guild, jsonData).then(status => resolve(status))
+  commitJSON(guild, jsonData).then(() => resolve(null)).catch(err => {
+    console.log('[modules.issue] error', err)
+
+    reject(errorModule(err).ECOMMIT_JSON)
+    return
+  })
 
 })
 
 /* Issue 作成処理 */
-exports.create = (message, title) => new Promise(resolve => {
+exports.create = (message, title) => new Promise( (resolve, reject) => {
 
   const jsonData = require(`${tempDir}/${message.guild.id}.json`)
   const issueID = Object.keys(jsonData.issues).length + 1
@@ -83,14 +94,19 @@ exports.create = (message, title) => new Promise(resolve => {
     }
     Object.assign(jsonData.issues, issue)
   
-    commitJSON(message.guild, jsonData).then(status => resolve(status))
+    commitJSON(message.guild, jsonData).then(() => resolve(null)).catch(err => {
+      console.log('[modules.issue] error', err)
 
+      reject(errorModule(err).ECOMMIT_JSON)
+      return
+    })
+    
   })
   
 })
 
 /* Issueチャンネル管理 */
-exports.controlChannel = (op, message) => new Promise(resolve => {
+exports.controlChannel = (op, message) => new Promise( (resolve, reject) => {
   
   const jsonData = require(`${tempDir}/${message.guild.id}.json`)
   let category = ''
@@ -105,28 +121,28 @@ exports.controlChannel = (op, message) => new Promise(resolve => {
       break
     
     default:
-      resolve(false)
+      reject(errorModule().EUNDEFINED_OPERATION)
       return
   }
 
   if(!(message.channel.id in jsonData.issues)) {
-    resolve(false)
+    reject(errorModule().ENOT_ISSUE_CHANNEL)
     return
   }
 
-  message.channel.setParent(category).then(() => resolve(true))
+  message.channel.setParent(category).then(() => resolve(null))
 
 })
 
 /* Issue 削除処理(滅多に使わない) */
-exports.delete = message => new Promise(resolve => {
+exports.delete = message => new Promise( (resolve, reject) => {
   
   const jsonData = require(`${tempDir}/${message.guild.id}.json`)
   if(!(message.channel.id in jsonData.issues)) {
-    resolve(false)
+    reject(errorModule().ENOT_ISSUE_CHANNEL)
     return
   }
 
-  message.channel.delete().then(() => resolve(true))
+  message.channel.delete().then(() => resolve(null))
 
 })
