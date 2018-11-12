@@ -59,6 +59,21 @@ module.exports = () => {
         controlModule.sendCategory(message)
 
       }
+      else if(/^\/issue category (open|closed) ([0-9]+)$/) {
+        console.log('[modules.discord]<message> set category')
+
+        const args = rcvMessage.match(/^\/issue category (open|closed) ([0-9]+)$/)
+
+        const ope = args[1]
+        const categoryID = args[2]
+
+        issueModule.setCategory(message.guild, ope, categoryID).then(() => {
+          message.channel.send('カテゴリーのセットに成功しました。')
+        }).catch(err => {
+          message.channel.send(err.readable)
+        })
+
+      }
       // else if(/^\/issue delete$/.test(rcvMessage)) {
       //   console.log('[modules.discord]<message> delete channel')
   

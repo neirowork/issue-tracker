@@ -67,6 +67,30 @@ exports.initIssue = guild => new Promise( (resolve, reject) => {
 
 })
 
+exports.setCategory = (guild, op, categoryID) => new Promise( (resolve, reject) => {
+
+  let jsonData = require(`${tempDir}/${guild.id}.json`)
+
+  switch(op) {
+    case 'open':
+      jsonData.category.open = categoryID
+      break
+    case 'closed':
+      jsonData.category.closed = categoryID
+      break
+    default:
+      reject(errorModule().EUNDEFINED_OPERATION)
+  }
+  
+  commitJSON(guild, jsonData).then(() => resolve(null)).catch(err => {
+    console.log('[modules.issue] error', err)
+
+    reject(errorModule(err).ECOMMIT_JSON)
+    return
+  })
+
+})
+
 /* Issue 作成処理 */
 exports.create = (message, title) => new Promise( (resolve, reject) => {
 
