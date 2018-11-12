@@ -35,33 +35,31 @@ module.exports = () => {
       else if(/^\/issue init all$/.test(rcvMessage)) {
         console.log('[modules.discord]<message> all initialzation')
 
-        issueModule.init(message.guild).then(status => {
-          if(status === null) {
-            message.channel.send('設定ファイルの初期化に成功しました。')
-          }
+        issueModule.init(message.guild).then(() => {
+          message.channel.send('設定ファイルの初期化に成功しました。')
         }).catch(err => {
-          message.channel.send('エラーが発生しました。')
+          message.channel.send(err.readable)
         })
-        
+
       }
       else if(/^\/issue init issues$/.test(rcvMessage)) {
         console.log('[modules.discord]<message> issues initialzation')
 
-        issueModule.initIssue(message.guild).then(status => {
-          if(status) {
-            message.channel.send('Issueの初期化に成功しました。')
-          }
+        issueModule.initIssue(message.guild).then(() => {
+          message.channel.send('Issueの初期化に成功しました。')
+        }).catch(err => {
+          message.channel.send(err.readable)
         })
+
       }
       // else if(/^\/issue delete$/.test(rcvMessage)) {
       //   console.log('[modules.discord]<message> delete channel')
   
-      //   issueModule.delete(message).then(status => {
-      //     if(!status) {
-      //       message.channel.send('このチャンネルは削除できません。')
-      //     }
-      //   })
-  
+      //   issueModule.delete(message).catch(err => {
+      //     message.channel.send(err.readable)
+
+      // })
+
       // }
 
     }
@@ -80,24 +78,20 @@ module.exports = () => {
     else if(/^\/issue (?:close)$/.test(rcvMessage)) {
       console.log('[modules.discord]<message> close issue')
 
-      issueModule.controlChannel('close', message).then(status => {
-        if(status) {
-          message.channel.send('クローズしました。')
-        } else {
-          message.channel.send('このチャンネルではクローズできません。')
-        }
+      issueModule.controlChannel('close', message).then(() => {
+        message.channel.send('クローズしました。')
+      }).catch(err => {
+        message.channel.send(err.readable)
       })
 
     }
     else if(/^\/issue reopen$/.test(rcvMessage)) {
       console.log('[modules.discord]<message> re-open issue')
 
-      issueModule.controlChannel('reopen', message).then(status => {
-        if(status) {
-          message.channel.send('再オープンしました。')
-        } else {
-          message.channel.send('このチャンネルでは再オープンできません。')
-        }
+      issueModule.controlChannel('reopen', message).then(() => {
+        message.channel.send('再オープンしました。')
+      }).catch(err => {
+        message.channel.send(err.readable)
       })
 
     }
