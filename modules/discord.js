@@ -5,23 +5,11 @@ const issueModule = require('./issue')
 
 const client = new discord.Client()
 
-let DEBUG_OPENISSUE = {}, DEBUG_CLOSEDISSUE = {}
-let DEBUG_ISSUEID = 0
-
 module.exports = () => {
 
   client.login(discordConfig.token)
 
   client.on('ready', () => {
-
-    DEBUG_OPENISSUE = {
-      '502741695163531266': client.channels.get('511113032378613760'),
-      '311153653002272770': client.channels.get('511016673084571663')
-    }
-    DEBUG_CLOSEDISSUE = {
-      '502741695163531266': client.channels.get('511113079702945811'),
-      '311153653002272770': client.channels.get('511016746493149194')
-    }
 
     console.log('[modules.discord] ready')
 
