@@ -53,6 +53,12 @@ module.exports = () => {
         })
 
       }
+      else if(/^\/issue category list$/.test(rcvMessage)) {
+        console.log('[modules.discord]<message> sent categories list')
+        
+        controlModule.sendCategory(message)
+
+      }
       // else if(/^\/issue delete$/.test(rcvMessage)) {
       //   console.log('[modules.discord]<message> delete channel')
   

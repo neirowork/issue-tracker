@@ -1,3 +1,5 @@
+const async = require('async')
+
 const tempDir = `${__dirname}/../temp`
 
 exports.isControlChannel = (guild, channel) => {
@@ -9,5 +11,32 @@ exports.isControlChannel = (guild, channel) => {
   } else {
     return false
   }
+
+}
+
+exports.sendCategory = message => {
+
+  const channelsArray = message.guild.channels.array()
+  const fields = []
+
+  async.each(channelsArray, (ch, callback) => {
+    if(ch.type === 'category') {
+      fields.push({
+        name: ch.name,
+        value: `\`${ch.id}\``,
+        inline: true
+      })
+    }
+    callback()
+
+  }, () => {
+    message.channel.send({
+      embed: {
+        title: 'このサーバーにあるカテゴリー一覧',
+        description: '得られたカテゴリーIDを設定ファイルに書き込んでください。',
+        fields
+      }
+    })
+  })
 
 }
