@@ -59,7 +59,7 @@ module.exports = () => {
         controlModule.sendCategory(message)
 
       }
-      else if(/^\/issue category (open|closed) ([0-9]+)$/) {
+      else if(/^\/issue category (open|closed) ([0-9]+)$/.test(rcvMessage)) {
         console.log('[modules.discord]<message> set category')
 
         const args = rcvMessage.match(/^\/issue category (open|closed) ([0-9]+)$/)

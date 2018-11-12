@@ -33,7 +33,6 @@ exports.sendCategory = message => {
     message.channel.send({
       embed: {
         title: 'このサーバーにあるカテゴリー一覧',
-        description: '得られたカテゴリーIDを設定ファイルに書き込んでください。',
         fields
       }
     })
